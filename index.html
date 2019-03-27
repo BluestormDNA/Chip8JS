@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chip 8 HTML5 JavaScript interpreter emulator</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+
+<body>
+    <div id="wrapper">
+        <header>
+            <div id="title">
+                <h1>Hello Chip8</h1>
+            </div>
+            <div id="rom">
+                <input type="file" id="fileInput" />
+                <label for="fileInput">Load ROM</label>
+            </div>
+        </header>
+        <canvas id="canvas" width="640" height="320"></canvas>
+        <div id="buttons">
+            <input type="button" value="1" />
+            <input type="button" value="2" />
+            <input type="button" value="3" />
+            <input type="button" value="C" />
+            <input type="button" value="4" />
+            <input type="button" value="5" />
+            <input type="button" value="6" />
+            <input type="button" value="D" />
+            <input type="button" value="7" />
+            <input type="button" value="8" />
+            <input type="button" value="9" />
+            <input type="button" value="E" />
+            <input type="button" value="A" />
+            <input type="button" value="0" />
+            <input type="button" value="B" />
+            <input type="button" value="F" />
+        </div>
+        <div id="regTitle">
+            <h4>REGISTERS</h4>
+        </div>
+        <div id="registers"></div>
+    </div>
+<script src="Chip8.js"></script>
+<script src="EmulatorShell.js"></script>
+</body>
+</html>
