@@ -1,14 +1,17 @@
 var chip8 = new Chip8;
 var fileInput = document.getElementById('fileInput');
 var lastRender = 0
+const CHIP8_SPEED = 500; //500hz chip8 speed
+const TIMER_SPEED = 1/60;  //60hz chip8 timer speed
+var timer = 0;
 var debug = false;
 var canvas = document.getElementById("canvas")
 var ctx = canvas.getContext("2d")
 ctx.fillStyle = "white"
 
 fileInput.addEventListener('change', function (e) {
-  var file = fileInput.files[0];
-  var reader = new FileReader();
+  let file = fileInput.files[0];
+  let reader = new FileReader();
   reader.onload = function (e) {
     let rom = new Uint8Array(reader.result);
     chip8 = new Chip8();
@@ -18,11 +21,19 @@ fileInput.addEventListener('change', function (e) {
   reader.readAsArrayBuffer(file);
 });
 
-function update(progress) {
-  for (let i = 0; i < 9; i++) {
+function update(delta) {
+  let cycles = delta * CHIP8_SPEED;
+  timer += delta;
+  for (let i = 0; i < cycles; i++) {
     chip8.run();
   }
-  chip8.updateTimers();
+
+  while (timer >= TIMER_SPEED) { //1s elapsed as timers update 60hz
+    timer -= TIMER_SPEED;
+    chip8.updateTimers();
+  }
+
+  showRegisters(delta, cycles, timer);// test delta
 }
 
 function draw() {
@@ -40,24 +51,27 @@ function draw() {
 }
 
 function loop(timestamp) {
-  var progress = timestamp - lastRender
-  update(progress)
+  let delta = (timestamp - lastRender) / 1000;
+  update(delta)
   draw()
 
   if (debug) {
-    showRegisters();
-  }
-
-  function showRegisters() {
-    let regText = document.getElementById("registers")
-    regText.innerHTML = `PC ${chip8.pc}<br>
-                        Opcode ${chip8.opcode.toString(16)}<br>
-                        SP ${chip8.stackPointer}<br>
-                        I ${chip8.I}<br>
-                        DelayTimer<br>
-                        SoundTimer`
+    //showRegisters();
   }
 
   lastRender = timestamp
   window.requestAnimationFrame(loop)
+}
+
+function showRegisters(delta, cycles, timer) {
+  let regText = document.getElementById("registers")
+  regText.innerHTML = `PC ${chip8.pc}<br>
+                      Opcode ${chip8.opcode.toString(16)}<br>
+                      SP ${chip8.stackPointer}<br>
+                      I ${chip8.I}<br>
+                      DelayTimer<br>
+                      SoundTimer<br>
+                      Delta ${delta}<br>
+                      cycles ${cycles}<br>
+                      timer ${timer}<br>`
 }
